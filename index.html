@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+    <style>
+        body {
+            background-color: #FFC0CB; /* 粉色背景 */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            height: 100vh; /* 100% 高度 */
+            margin: 0; /* 去掉默认边距 */
+        }
+        .login-container {
+            background-color: white; /* 背景为白色 */
+            padding: 20px;
+            border-radius: 10px; /* 圆角 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+            width: 300px; /* 固定宽度 */
+        }
+        h1 {
+            text-align: center; /* 标题居中 */
+        }
+        .form-group {
+            margin-bottom: 15px; /* 表单组之间的间距 */
+        }
+        label {
+            display: block; /* 标签块级显示 */
+            margin-bottom: 5px; /* 标签与输入框之间的间距 */
+        }
+        input[type="text"], input[type="password"] {
+            width: 95%; /* 输入框宽度100% */
+            padding: 10px; /* 内边距 */
+            border: 1px solid #ccc; /* 边框 */
+            border-radius: 5px; /* 圆角 */
+        }
+        .login-button {
+            width: 100%; /* 按钮宽度100% */
+            padding: 10px;
+            background-color: #FF69B4; /* 按钮背景色 */
+            color: white; /* 按钮文字颜色 */
+            border: none; /* 去掉边框 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标指针 */
+        }
+        .login-button:hover {
+            background-color: #FF1493; /* 悬停时的颜色 */
+        }
+        .error-message {
+            color: red; /* 错误信息为红色 */
+            text-align: center; /* 居中对齐 */
+            margin-top: 10px; /* 顶部间距 */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>登录</h1>
+        <form id="loginForm" onsubmit="return validateLogin();">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-button">登录</button>
+            <div id="error-message" class="error-message"></div>
+        </form>
+    </div>
+
+    <script>
+        const fixedUsername = "cici"; // 固定用户名
+        const fixedPassword = "100723"; // 固定密码
+
+        function validateLogin() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
+
+            if (username !== fixedUsername || password !== fixedPassword) {
+                errorMessage.textContent = "用户名或密码错误，请重试。";
+                return false; // 阻止表单提交
+            }
+
+            // 用户名和密码正确，跳转到 index.html
+            window.location.href = "ofter-login.html";
+            return false; // 阻止表单的默认提交
+        }
+    </script>
+</body>
+</html>

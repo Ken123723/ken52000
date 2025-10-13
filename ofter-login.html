@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+ <head>
+     <title>我們的網站</title>
+     <link rel="stylesheet" href="css/style.css">
+    
+     <style>  /*文字和圖片*/
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white; /* 背景顏色 */
+            font-family: Arial, sans-serif;
+            color: black; /* 文字顏色 */
+            position: relative; /* 為倒影定位 */
+            overflow: hidden; /* 隱藏溢出 */
+        }
+        .container {
+            position: relative; /* 為子元素定位 */
+            text-align: center; /* 文字居中 */
+        }
+
+        .text {
+            animation: fade 3s infinite; /* 漸變效果 */
+        }
+        @keyframes fade {
+            0% {
+                opacity: 0; /* 開始時透明 */
+            }
+            50% {
+                opacity: 1; /* 中間時完全可見 */
+            }
+            100% {
+                opacity: 0; /* 結束時透明 */
+            }
+        }
+        .shadow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: rgba(255, 255, 255, 0.2); /* 倒影顏色 */
+            filter: blur(5px); /* 倒影模糊 */
+            transform: scaleY(-1); /* 垂直翻轉 */
+        }
+
+        .bg-image {
+            position: fixed; /* 固定背景，滚动不偏移 */
+            top: 0;
+            left: 0;
+            width: 100vw; /* 充满屏幕宽度 */
+            height: 100vh; /* 充满屏幕高度 */
+            z-index: 1; /* 层级最低，在最下层 */
+            opacity: 0.5; /* 降低透明度，让图片更浅 */
+            filter: brightness(0.9); /* 提高亮度，进一步淡化图片 */
+            object-fit: cover; /* 图片自适应容器，不拉伸变形 */
+        }
+        
+    </style>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* 隱藏滾動條 */
+            background-color: white; /* 背景顏色 */
+        }
+        canvas {
+            display: block; /* 使 canvas 填滿整個視窗 */
+        }
+    </style>
+
+    <style> /*愛心*/
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #0f172a;
+        }
+        canvas {
+            display: block;
+        }
+        .text-container {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 100, 150, 0.8);
+            font-weight: 600;
+            z-index: 10;
+            animation: blink 3s infinite ease-in-out;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+
+ </head>
+
+ <body>
+
+   <header class="headerWrap">
+    <div class="header">
+        <div class="right">
+          <a class="nav-item" href="about.html">關於我們</a>
+          <a class="nav-item" href="how-long-known.html">認識了多久</a>
+          <a class="nav-item" href="how-long-together.html">在一起多久了</a>
+          <a class="nav-item" href="#" id="logout-button">登出</a>
+        </div>
+    </div>
+   </header>
+
+   <script>
+      document.getElementById('logout-button').addEventListener('click', function(event) {
+      event.preventDefault(); // 防止默認行為
+  
+       // 在這裡執行登出邏輯
+
+       // 先重定向到登出頁面
+      window.location.replace('index.html'); // 用實際的登出後頁面替換
+
+      // 添加新的歷史紀錄項
+      history.pushState(null, '', 'index.html'); // 這一行確保用戶無法返回
+     });
+   </script>
+   
+   <div class="text-container">
+    <div class="shadow">Hello! Welcome to our website</div> <!-- 倒影 -->
+    <div class="text">Hello! Welcome to our website</div> <!-- 主文字 -->
+   </div>
+   
+  <img class="bg-image" src="picture/微信圖片_202510130058582.jpg" alt="浅色背景图"> <!-- 背景圖 -->
+
+   <canvas id="heartCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 3D粒子
+        class Particle {
+            constructor(x, y, z) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+                this.baseX = x;
+                this.baseY = y;
+                this.baseZ = z;
+                this.size = Math.random() * 2 + 1.5;
+                this.speed = Math.random() * 0.3 + 0.1;
+                this.pulse = Math.random() * Math.PI * 2;
+                this.color = this.getColorByDepth(z);
+            }
+
+            getColorByDepth(z) {
+                const brightness = 80 - (z * 30);
+                const hue = Math.random() * 30 + 330;
+                return `hsla(${hue}, 80%, ${brightness}%, 0.9)`;
+            }
+
+            update(angleX, angleY) {
+                let x = this.baseX;
+                let y = this.baseY;
+                let z = this.baseZ;
+
+                // 绕Y轴旋转
+                const tempX = x;
+                x = tempX * Math.cos(angleY) - z * Math.sin(angleY);
+                z = tempX * Math.sin(angleY) + z * Math.cos(angleY);
+
+                // 绕X轴旋转
+                const tempY = y;
+                y = tempY * Math.cos(angleX) - z * Math.sin(angleX);
+                z = tempY * Math.sin(angleX) + z * Math.cos(angleX);
+
+                // 呼吸效果
+                this.pulse += 0.02;
+                const pulseOffset = Math.sin(this.pulse) * this.speed;
+                
+                // 透视投影计算 - 这里添加了Y轴偏移，让爱心整体下移
+                const scale = 200 / (200 + z);
+                // 核心修改：在Y轴位置增加50像素的偏移（值越大越靠下）
+                this.screenX = x * scale + canvas.width / 2;
+                this.screenY = y * scale + canvas.height / 2 + 100; 
+                this.screenSize = this.size * scale;
+                this.screenZ = z;
+            }
+
+            draw() {
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 5 + (this.screenZ * 0.1);
+                
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.screenX, this.screenY, this.screenSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        let particles = [];
+        let angleX = 0;
+        let angleY = 0;
+
+        // 生成3D爱心形状
+        function create3DHeartShape() {
+            const points = [];
+            const scale = Math.min(canvas.width, canvas.height) * 0.007;
+            const depth = 3;
+
+            for (let d = -depth; d <= depth; d++) {
+                const layerScale = 1 - Math.abs(d) / (depth * 3);
+                
+                for (let t = 0; t <= Math.PI * 2; t += 0.03) {
+                    const x = 16 * Math.pow(Math.sin(t), 3);
+                    const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                    const z = d * 3;
+                    
+                    points.push({
+                        x: x * scale * layerScale,
+                        y: y * scale * layerScale,
+                        z: z
+                    });
+                }
+            }
+
+            return points;
+        }
+
+        function init() {
+            particles = [];
+            const heartPoints = create3DHeartShape();
+            
+            heartPoints.forEach(point => {
+                particles.push(new Particle(
+                    point.x,
+                    point.y,
+                    point.z
+                ));
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            angleX += 0.003;
+            angleY += 0.002;
+            
+            particles.forEach(particle => {
+                particle.update(angleX, angleY);
+            });
+            
+            particles.sort((a, b) => b.screenZ - a.screenZ);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255, 100, 150, 0.05)';
+            ctx.lineWidth = 0.3;
+            
+            particles.forEach((p1, i) => {
+                for (let j = i + 1; j < Math.min(i + 15, particles.length); j++) {
+                    const p2 = particles[j];
+                    const dx = p1.screenX - p2.screenX;
+                    const dy = p1.screenY - p2.screenY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 25) {
+                        ctx.moveTo(p1.screenX, p1.screenY);
+                        ctx.lineTo(p2.screenX, p2.screenY);
+                    }
+                }
+            });
+            ctx.stroke();
+            
+            particles.forEach(particle => {
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / canvas.width - 0.5;
+            const mouseY = e.clientY / canvas.height - 0.5;
+            angleY = mouseX * Math.PI * 0.3;
+            angleX = mouseY * Math.PI * 0.3;
+        });
+
+        init();
+        animate();
+    </script>
+
+ </body>
+</html>
