@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <style>
+       .back-button {
+            padding: 30px 40px;
+            font-size: 16px;
+            background-color: #FF69B4; /* 按钮背景色 */
+            color: white; /* 按钮文字颜色 */
+            border: none; /* 去掉边框 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标指针 */
+        }
+    </style>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .main-image {
+            cursor: pointer; /* 使光標顯示為可點擊 */
+            width: 200px; /* 固定寬度 */
+            height: 150px; /* 固定高度 */
+            object-fit: cover; /* 使圖片填滿區域 */
+            transition: transform 0.2s; /* 添加過渡效果 */
+        }
+        .main-image:hover {
+            transform: scale(1.05); /* 懸停放大效果 */
+        }
+        .description {
+            margin-top: 10px; /* 與圖片的間隔 */
+            text-align: center; /* 文字居中 */
+            font-size: 18px; /* 文字大小 */
+            color: #333; /* 文字顏色 */
+        }
+        /* 模態框樣式 */
+        .modal {
+            display: none; /* 初始隱藏 */
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8); /* 半透明背景 */
+        }
+        .modal-content {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 列 */
+            gap: 10px; /* 圖片之間的間距 */
+            padding: 20px;
+            margin: 50px auto;
+            max-width: 800px; /* 限制最大寬度 */
+        }
+        .modal-content img {
+            width: 100%; /* 使圖片填滿格子 */
+            height: auto; /* 自動調整高度 */
+            border-radius: 8px; /* 圖片圓角 */
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我們的網站</title>
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #FFC0CB;
+            font-family: Arial, sans-serif;
+        }
+        .clock {
+            font-size: 3em;
+            color: #333;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .days {
+            font-size: 1.5em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="clock" id="clock">今天的時間是：</div>
+<div class="days" id="days">距離 10/7/2023 的天數：</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const options = { 
+            timeZone: 'Asia/Hong_Kong', 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: false 
+        };
+        const formatter = new Intl.DateTimeFormat('zh-HK', options);
+        const timeString = formatter.format(now).replace(',', ' '); // 調整格式
+        document.getElementById('clock').textContent = `今天的時間是：${timeString}`;
+
+        // 計算距離 2022年7月23日 的天數
+        const pastDate = new Date('2023-07-10T00:00:00+08:00'); // 香港時區
+        const timeDifference = now - pastDate; // 毫秒差
+        const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24)); // 轉換為天數
+        document.getElementById('days').textContent = `距離 10/7/2023 的天數：${daysDifference} 天`;
+    }
+
+    setInterval(updateClock, 1000); // 每秒更新時鐘
+    updateClock(); // 首次顯示時間
+</script>
+
+<!-- 主圖片容器 -->
+<img class="main-image" src="picture/file logo.jpg" alt="點擊顯示圖片" onclick="openModal()">
+<p class="description">點擊文件夾有驚喜哦</p> <!-- 文字描述 -->
+
+<!-- 模態框 -->
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+        <img src="picture/how-long-together1.jpg" alt="圖片1">
+        <img src="picture/how-long-together2.jpg" alt="圖片2">
+        <img src="picture/微信圖片_20251013005853.jpg" alt="圖片3">
+        <img src="picture/微信圖片_20251013005856.jpg" alt="圖片4">
+        <img src="picture/微信圖片_20251013005857.jpg" alt="圖片5">
+        <img src="picture/微信圖片_20251013005858.jpg" alt="圖片6">
+        <img src="picture/微信圖片_20251013005859.jpg" alt="圖片7">
+        <img src="picture/微信圖片_20251013005859.png" alt="圖片8">
+        <img src="picture/微信圖片_20251013005900.jpg" alt="圖片9">
+        <img src="picture/微信圖片_20251013005901.jpg" alt="圖片10">
+        <img src="picture/微信圖片_20251013005902.jpg" alt="圖片11">
+        <img src="picture/微信圖片_20251013005903.jpg" alt="圖片12">
+        <img src="picture/微信圖片_202510130058571.jpg" alt="圖片13">
+        <img src="picture/微信圖片_202510130058572.jpg" alt="圖片14">
+        <img src="picture/微信圖片_202510130058581.jpg" alt="圖片15">
+        <img src="picture/微信圖片_202510130058582.jpg" alt="圖片16">
+        <img src="picture/微信圖片_202510130058591.jpg" alt="圖片17">
+        <img src="picture/微信圖片_202510130058591.png" alt="圖片18">
+        <img src="picture/微信圖片_202510130058592.jpg" alt="圖片19">
+        <img src="picture/微信圖片_202510130059001.jpg" alt="圖片20">
+        <img src="picture/微信圖片_202510130059002.jpg" alt="圖片21">
+        <img src="picture/微信圖片_202510130059003.jpg" alt="圖片22">
+        <img src="picture/微信圖片_202510130059004.jpg" alt="圖片23">
+        <img src="picture/微信圖片_202510130059021.jpg" alt="圖片24">
+        <img src="picture/微信圖片_202510130059022.jpg" alt="圖片25">
+        <img src="picture/微信圖片_202510130059023.jpg" alt="圖片26">
+        <img src="picture/微信圖片_202510130059024.jpg" alt="圖片27">
+        <img src="picture/微信圖片_202510130059025.jpg" alt="圖片28">
+        <img src="picture/微信圖片_202510130059026.jpg" alt="圖片29">
+        <img src="picture/微信圖片_202510130059031.jpg" alt="圖片30">
+    </div>
+</div>
+
+<script>
+    // 打開模態框
+    function openModal() {
+        document.getElementById("myModal").style.display = "block";
+    }
+
+    // 關閉模態框
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    // 點擊模態框外部關閉模態框
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("myModal")) {
+            closeModal();
+        }
+    }
+</script>
+   <button class="back-button" onclick="window.history.back();">返回</button>
+
+</body>
+</html>
