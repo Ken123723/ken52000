@@ -27,7 +27,7 @@ li {
 
 /* 头部内层容器样式 */
 .header {
-    width: 1000px;  /* 固定宽度1000px */
+    width: 1100px;  /* 固定宽度1000px */
     height: 100px;  /* 高度与外层容器一致，确保内容垂直居中 */
     margin: 0 auto;  /* 水平居中对齐 */
     display: flex;  /* 使用弹性布局 */
