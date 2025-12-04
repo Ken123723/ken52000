@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日倒计时 - 12月4日</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .birthday-date {
+            font-size: 24px;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            background: #fff0f0;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .time-box {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            min-width: 100px;
+            box-shadow: 0 5px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .number {
+            font-size: 40px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .label {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .birthday-message {
+            background: #ffefef;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+        
+        .birthday-message.show {
+            display: block;
+        }
+        
+        .celebrate {
+            font-size: 50px;
+            margin: 10px 0;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 15px;
+            height: 15px;
+            pointer-events: none;
+            opacity: 0.8;
+            z-index: 1000;
+        }
+        
+        button {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #3dbcb4;
+            transform: translateY(-2px);
+        }
+        
+        .current-date {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎂 生日倒计时 🎂</h1>
+        <p>距离下一个12月4日生日还有：</p>
+        
+        <div class="countdown">
+            <div class="time-box">
+                <div class="number" id="days">0</div>
+                <div class="label">天</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="hours">0</div>
+                <div class="label">小时</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="minutes">0</div>
+                <div class="label">分钟</div>
+            </div>
+            <div class="time-box">
+                <div class="number" id="seconds">0</div>
+                <div class="label">秒</div>
+            </div>
+        </div>
+        
+        <div class="birthday-message" id="birthdayMessage">
+            <div class="celebrate">🎉🎂🎁</div>
+            <h2>生日快乐！</h2>
+            <p>今天是12月4日，祝你生日快乐！</p>
+            <button onclick="stopCelebration()">停止庆祝</button>
+        </div>
+        
+        <div class="current-date">
+            今天是：<span id="currentDate"></span>
+        </div>
+        
+    </div>
+
+    <script>
+        // 固定生日日期：12月4日
+        const BIRTHDAY_MONTH = 11; // 月份是0-11，12月是11
+        const BIRTHDAY_DAY = 4;
+        
+        let isCelebrating = false;
+        let confettiInterval;
+        
+        // 显示当前日期
+        function updateCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('currentDate').textContent = `${year}年${month}月${day}日`;
+        }
+        
+        function startCountdown() {
+            updateCountdown();
+            // 每秒更新一次
+            setInterval(updateCountdown, 1000);
+        }
+        
+        function updateCountdown() {
+            const now = new Date();
+            
+            // 计算下一个12月4日
+            let nextBirthday = new Date(now.getFullYear(), BIRTHDAY_MONTH, BIRTHDAY_DAY);
+            
+            // 检查今天是否是12月4日
+            const isBirthdayToday = 
+                now.getDate() === BIRTHDAY_DAY && 
+                now.getMonth() === BIRTHDAY_MONTH;
+            
+            // 如果是生日当天，显示庆祝效果
+            if (isBirthdayToday && !isCelebrating) {
+                celebrateBirthday();
+            }
+            
+            // 如果是生日当天，倒计时应该是0
+            if (isBirthdayToday) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+            
+            // 如果今年生日已经过了，计算明年生日
+            if (nextBirthday < now) {
+                nextBirthday.setFullYear(now.getFullYear() + 1);
+            }
+            
+            // 计算时间差（毫秒）
+            const diff = nextBirthday - now;
+            
+            // 计算天、时、分、秒
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            // 更新显示
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+        
+        function celebrateBirthday() {
+            isCelebrating = true;
+            
+            // 显示生日消息
+            document.getElementById('birthdayMessage').classList.add('show');
+            
+            // 创建五彩纸屑
+            createConfetti();
+            
+            // 播放生日快乐声音
+            playBirthdaySound();
+        }
+        
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0', '#118ab2', '#ef476f'];
+            
+            // 创建150个五彩纸屑
+            for (let i = 0; i < 150; i++) {
+                createSingleConfetti(colors);
+            }
+            
+            // 持续创建纸屑直到停止
+            confettiInterval = setInterval(() => {
+                if (isCelebrating) {
+                    for (let i = 0; i < 20; i++) {
+                        createSingleConfetti(colors);
+                    }
+                }
+            }, 500);
+        }
+        
+        function createSingleConfetti(colors) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 15 + 5;
+            const left = Math.random() * 100;
+            const animationDuration = Math.random() * 3 + 2;
+            
+            confetti.style.backgroundColor = color;
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
+            confetti.style.left = `${left}vw`;
+            confetti.style.top = '-20px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.position = 'fixed';
+            confetti.style.zIndex = '1000';
+            confetti.style.pointerEvents = 'none';
+            
+            // 添加动画
+            confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+            
+            document.body.appendChild(confetti);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.remove();
+                }
+            }, animationDuration * 1000);
+        }
+        
+        // 添加下落动画到样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        function playBirthdaySound() {
+            // 创建简单的生日快乐音频
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // 生日快乐歌的旋律（简版）
+            const melody = [
+                {note: 'C4', duration: 0.5},
+                {note: 'C4', duration: 0.5},
+                {note: 'D4', duration: 1},
+                {note: 'C4', duration: 1},
+                {note: 'F4', duration: 1},
+                {note: 'E4', duration: 2}
+            ];
+            
+            const noteFreq = {
+                'C4': 261.63,
+                'D4': 293.66,
+                'E4': 329.63,
+                'F4': 349.23
+            };
+            
+            let time = audioContext.currentTime;
+            
+            melody.forEach(tone => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = noteFreq[tone.note];
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, time);
+                gainNode.gain.linearRampToValueAtTime(0.1, time + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, time + tone.duration);
+                
+                oscillator.start(time);
+                oscillator.stop(time + tone.duration);
+                
+                time += tone.duration;
+            });
+        }
+        
+        function stopCelebration() {
+            isCelebrating = false;
+            
+            // 隐藏生日消息
+            document.getElementById('birthdayMessage').classList.remove('show');
+            
+            // 停止纸屑生成
+            if (confettiInterval) {
+                clearInterval(confettiInterval);
+            }
+            
+            // 移除所有五彩纸屑
+            const confettiElements = document.querySelectorAll('.confetti');
+            confettiElements.forEach(confetti => confetti.remove());
+        }
+        
+        // 页面加载时自动开始倒计时
+        window.addEventListener('load', () => {
+            updateCurrentDate();
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
